@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TAU · Степа, рейтинг и GPA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#040a1f;
+    --bg2:#06112e;
+    --blue:#0a5bd6;
+    --sky:#a9c9f5;
+    --ink:#eaf1ff;
+    --mute:#8ea3c7;
+    --line:rgba(140,180,255,.18);
+    --teal:#2cc5c0;
+    --gold:#e8b04a;
+    --maroon:#8a2450;
+    --ok:#5fe0b0;--warn:#f0c15a;--bad:#ff7a8c;
+    --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+    --sans:'Lato',-apple-system,Segoe UI,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:720px;margin:0 auto;padding:0 20px}
+  a{color:inherit}
+
+  /* NAV */
+  nav{position:absolute;top:0;left:0;right:0;z-index:5}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;padding-top:22px}
+  .logo{text-decoration:none;display:block}
+  .mark{font-weight:700;letter-spacing:.16em;font-size:20px}
+  .mark i{font-style:normal;color:var(--gold)}
+  .logo small{display:block;font-size:7.5px;letter-spacing:.32em;color:var(--sky);font-weight:400;margin-top:-1px}
+  nav .links a{font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;text-decoration:none;margin-left:16px;opacity:.9;padding-bottom:4px}
+  nav .links a:first-child{border-bottom:1px solid var(--sky)}
+  nav .links a:hover{color:var(--sky)}
+
+  /* HERO */
+  .hero{position:relative;overflow:hidden;padding:140px 0 150px;
+    background:
+      radial-gradient(70% 60% at 75% 35%,rgba(70,160,255,.55),transparent 70%),
+      linear-gradient(180deg,#0a6cf0 0%,#0646b8 28%,#04206b 58%,var(--bg) 100%)}
+  .hero::before{content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(100deg,rgba(255,255,255,.05) 0 2px,transparent 2px 60px);
+    -webkit-mask:linear-gradient(180deg,#000,transparent 70%);mask:linear-gradient(180deg,#000,transparent 70%)}
+  .hero .wrap{position:relative;z-index:2}
+  .hero h1{font-family:var(--serif);font-weight:500;font-size:54px;line-height:1.02;margin:0 0 16px;color:var(--sky)}
+  .hero p{max-width:260px;font-size:14px;color:#cfe0ff;margin:0 0 26px}
+  .pill{display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border:1px solid rgba(120,170,255,.6);border-radius:999px;color:var(--ink);background:rgba(10,40,120,.35);font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;text-decoration:none;cursor:pointer;font-family:var(--sans);font-weight:400;transition:.2s}
+  .pill:hover{background:rgba(70,140,255,.3);border-color:var(--sky)}
+  .pill.sm{padding:9px 16px;font-size:9.5px}
+  .dots{width:12px;height:12px;position:relative}
+  .dots::before,.dots::after{content:"";position:absolute;border-radius:50%;background:#fff}
+  .dots::before{width:5px;height:5px;left:0;top:0}
+  .dots::after{width:3px;height:3px;left:6px;top:7px}
+
+  /* jellyfish */
+  .jelly{position:absolute;right:-10px;top:70px;width:250px;z-index:1;animation:float 7s ease-in-out infinite;filter:drop-shadow(0 0 30px rgba(120,200,255,.5))}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+  .tent{animation:sway 5s ease-in-out infinite;transform-origin:150px 150px}
+  @keyframes sway{0%,100%{transform:skewX(0)}50%{transform:skewX(3deg)}}
+  .orbit{position:absolute;border:1px solid rgba(190,220,255,.25);border-radius:50%;pointer-events:none}
+  .orbit::after{content:"";position:absolute;width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 12px var(--teal)}
+  .o1{width:130px;height:130px;right:50px;top:300px;z-index:1}.o1::after{top:6px;right:18px}
+  .hero-label{position:absolute;right:20px;top:360px;z-index:2;text-align:right;font-size:8.5px;letter-spacing:.35em;color:var(--sky);text-transform:uppercase;opacity:.8}
+
+  /* TOP CARDS */
+  .cards{margin-top:-96px;position:relative;z-index:3}
+  .grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .tcard{position:relative;display:block;height:190px;border-radius:6px;overflow:hidden;text-decoration:none;padding:16px;
+    box-shadow:0 20px 40px rgba(0,0,0,.5);border:1px solid var(--line)}
+  .tcard::before{content:"";position:absolute;left:-28px;bottom:-28px;width:90px;height:90px;border-radius:50%;background:rgba(44,197,192,.55)}
+  .tcard .v{position:relative;font-family:var(--serif);font-size:44px;font-weight:600;line-height:1;margin-top:8px}
+  .tcard .s{position:relative;font-size:10px;letter-spacing:.2em;color:#cfe0ff;margin-top:4px;text-transform:uppercase}
+  .tcard .t{position:absolute;left:16px;bottom:14px;font-size:10px;letter-spacing:.38em;text-transform:uppercase;font-weight:700;color:#fff}
+  .c1{background:linear-gradient(160deg,#0d6e8c,#0a2f66)}
+  .c2{background:linear-gradient(160deg,#25267a,#0b1650)}
+  .c3{background:linear-gradient(160deg,#0f7aa0,#0a4a78)}
+  .c4{background:linear-gradient(160deg,#5a2a80,#1b1450)}
+
+  /* SECTION TITLES */
+  section{padding:70px 0 0}
+  .eyebrow{font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--teal);margin-bottom:8px;text-align:center}
+  h2{font-family:var(--serif);font-weight:500;font-size:38px;line-height:1.1;margin:0 0 28px;color:var(--sky);text-align:center}
+
+  /* three columns */
+  .cols{display:grid;grid-template-columns:1fr;gap:34px;text-align:center}
+  .col .ring{width:68px;height:68px;border:1px solid rgba(190,220,255,.25);border-radius:50%;margin:0 auto 14px;position:relative}
+  .col .ring::before,.col .ring::after{content:"";position:absolute;width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px var(--teal)}
+  .col .ring::before{right:6px;bottom:8px}
+  .col .ring::after{left:12px;top:6px;background:#7fb3ff;box-shadow:0 0 10px #7fb3ff;opacity:.8}
+  .col .ring b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--serif);font-size:24px;font-weight:600;color:var(--sky)}
+  .col h4{margin:0 0 8px;font-size:10.5px;letter-spacing:.34em;text-transform:uppercase;font-weight:400;color:var(--ink)}
+  .col p{margin:0 auto 14px;max-width:260px;font-size:13px;color:var(--mute)}
+
+  /* calculator */
+  .panel{background:linear-gradient(180deg,rgba(20,50,120,.28),rgba(6,17,46,.6));border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.45)}
+  label{display:block;font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--mute);margin:14px 0 6px}
+  input{width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(2,8,28,.7);color:var(--ink);font-size:17px;font-family:var(--sans);font-weight:300}
+  input:focus{outline:none;border-color:var(--sky);box-shadow:0 0 0 3px rgba(120,170,255,.15)}
+  input::placeholder{color:#4d6188}
+  .row{display:flex;gap:12px}.row>*{flex:1;min-width:0}
+  .row3{display:flex;gap:10px}.row3>*{flex:1;min-width:0}
+  .res{margin-top:16px}
+  .cur{font-size:13px;color:var(--mute)}
+  .cur b{color:var(--ink);font-weight:700}
+  .box{border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-top:12px;background:rgba(2,8,28,.55)}
+  .box h3{margin:0 0 6px;font-size:9.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--mute);font-weight:400}
+  .big{font-family:var(--serif);font-size:38px;font-weight:600;line-height:1.05}
+  .ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+  .note{font-size:13px;color:var(--mute);margin-top:8px}
+  .meter{height:4px;border-radius:4px;background:rgba(255,255,255,.1);margin-top:14px;overflow:hidden}
+  .meter span{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#1c6bff,var(--teal))}
+  details{margin-top:18px;font-size:14px;color:var(--mute)}
+  summary{cursor:pointer;font-size:9.5px;letter-spacing:.28em;text-transform:uppercase}
+  summary:hover{color:var(--sky)}
+
+  /* GPA */
+  .subj{display:grid;grid-template-columns:1fr 74px 74px 32px;gap:8px;margin-bottom:8px;align-items:center}
+  .subj input{padding:11px 10px;font-size:16px}
+  .hd{font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--mute)}
+  .x{background:none;border:none;color:var(--bad);font-size:18px;cursor:pointer;padding:4px}
+  .btns{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+  .gpa-box{text-align:center;padding:22px}
+  .gpa-box .big{font-size:60px;color:var(--sky)}
+
+  /* banner */
+  .banner{margin-top:70px;position:relative;overflow:hidden;text-align:center;padding:90px 20px;
+    background:
+      radial-gradient(60% 80% at 50% 0%,rgba(80,170,255,.35),transparent 70%),
+      linear-gradient(180deg,#07204f,#030a1e)}
+  .banner h3{font-family:var(--serif);font-weight:400;font-size:30px;letter-spacing:.35em;text-transform:uppercase;margin:0 0 24px;color:var(--ink)}
+  .banner .orbit{width:110px;height:110px;left:50%;top:26px;margin-left:-20px}
+  .banner .orbit::after{top:30px;left:8px;background:#7fe0a0;box-shadow:0 0 12px #7fe0a0}
+
+  footer{background:#030814;padding:30px 0 34px}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px}
+  footer .links a{font-size:10px;letter-spacing:.28em;text-transform:uppercase;text-decoration:none;margin-left:16px;color:var(--ink)}
+  .legal{text-align:center;font-size:11.5px;color:var(--mute);margin-top:18px}
+  .hidden{display:none}
+
+  @media(min-width:640px){
+    .grid4{grid-template-columns:repeat(4,1fr)}
+    .cols{grid-template-columns:repeat(3,1fr)}
+    .hero h1{font-size:68px}
+    .jelly{width:320px;right:0}
+    .hero p{max-width:300px}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="logo" href="#top"><span class="mark">T<i>A</i>U</span><small>TURAN-ASTANA UNIVERSITY</small></a>
+    <div class="links">
+      <a href="#permit">Расчёт</a>
+      <a href="#gpa-sec">GPA</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <!-- медуза (SVG) -->
+  <svg class="jelly" viewBox="0 0 300 380" aria-hidden="true">
+    <defs>
+      <radialGradient id="bell" cx="50%" cy="35%" r="70%">
+        <stop offset="0" stop-color="#e9fbff" stop-opacity=".95"/>
+        <stop offset=".45" stop-color="#8fd8ff" stop-opacity=".75"/>
+        <stop offset=".8" stop-color="#9a7cff" stop-opacity=".55"/>
+        <stop offset="1" stop-color="#6a5cff" stop-opacity=".15"/>
+      </radialGradient>
+      <linearGradient id="tentg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#cfe9ff" stop-opacity=".8"/>
+        <stop offset="1" stop-color="#9a8cff" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <g class="tent" fill="none" stroke="url(#tentg)" stroke-width="2.2" stroke-linecap="round">
+      <path d="M95 150 C85 190 110 210 95 250 C85 280 105 310 95 350"/>
+      <path d="M120 152 C112 200 138 220 122 270 C114 300 130 330 122 370"/>
+      <path d="M150 154 C146 195 160 230 150 275 C144 310 158 340 150 375"/>
+      <path d="M180 152 C190 200 165 225 180 268 C190 300 172 328 180 368"/>
+      <path d="M205 150 C216 190 192 212 206 252 C216 282 198 312 206 348"/>
+      <path d="M70 146 C55 175 78 190 66 220" stroke-width="1.6"/>
+      <path d="M230 146 C245 175 222 190 234 220" stroke-width="1.6"/>
+    </g>
+    <path d="M42 140 C42 62 108 20 150 20 C192 20 258 62 258 140 C258 152 248 156 238 150 C220 140 200 152 150 152 C100 152 80 140 62 150 C52 156 42 152 42 140 Z" fill="url(#bell)"/>
+    <path d="M70 105 C80 62 118 40 150 38" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="3" stroke-linecap="round"/>
+  </svg>
+  <div class="orbit o1"></div>
+  <div class="hero-label">Допуск · Степа · GPA</div>
+
+  <div class="wrap">
+    <h1>Не потеряй<br>свою степу</h1>
+    <p>Введи баллы за РК. Узнай допуск, сколько нужно на сессии и свой GPA.</p>
+    <a class="pill" href="#permit"><span class="dots"></span>Рассчитать</a>
+  </div>
+</header>
+
+<!-- ЖИВЫЕ КАРТОЧКИ -->
+<div class="cards">
+  <div class="wrap">
+    <div class="grid4">
+      <a class="tcard c1" href="#permit"><div class="s">Рейтинг</div><div class="v" id="cRating">—</div><div class="t">Допуск</div></a>
+      <a class="tcard c2" href="#permit"><div class="s">Нужно на сессии</div><div class="v" id="cStepa">—</div><div class="t">Степа</div></a>
+      <a class="tcard c3" href="#permit"><div class="s">Нужно на сессии</div><div class="v" id="cLetka">—</div><div class="t">Летка</div></a>
+      <a class="tcard c4" href="#gpa-sec"><div class="s">Средний балл</div><div class="v" id="cGpa">—</div><div class="t">GPA</div></a>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <h2>Всё в одном месте</h2>
+    <div class="cols">
+      <div class="col"><div class="ring"><b>50</b></div><h4>Допуск</h4><p>(РК1 + РК2) / 2 должно быть не меньше 50, иначе к сессии не допустят.</p><a class="pill sm" href="#permit">Проверить</a></div>
+      <div class="col"><div class="ring"><b>70</b></div><h4>Степа</h4><p>Тотал 70+ сохраняет стипендию. Покажем, сколько набрать на сессии.</p><a class="pill sm" href="#permit">Узнать</a></div>
+      <div class="col"><div class="ring"><b>4.0</b></div><h4>GPA</h4><p>Считаем средний балл по кредитам и итоговым баллам за предметы.</p><a class="pill sm" href="#gpa-sec">Посчитать</a></div>
+    </div>
+  </div>
+</section>
+
+<section id="permit">
+  <div class="wrap">
+    <div class="eyebrow">Шаг 1</div>
+    <h2>Допуск и сессия</h2>
+    <div class="panel">
+      <div class="row">
+        <div><label>РК 1 (0–100)</label><input id="rk1" type="number" inputmode="decimal" min="0" max="100" placeholder="80" oninput="calc()"></div>
+        <div><label>РК 2 (0–100)</label><input id="rk2" type="number" inputmode="decimal" min="0" max="100" placeholder="75" oninput="calc()"></div>
+      </div>
+      <div class="res" id="out"></div>
+
+      <details>
+        <summary>Настройки · веса и пороги</summary>
+        <div class="row3">
+          <div><label>Вес РК1, %</label><input id="w1" type="number" value="30" oninput="calc()"></div>
+          <div><label>Вес РК2, %</label><input id="w2" type="number" value="30" oninput="calc()"></div>
+          <div><label>Сессия, %</label><input id="w3" type="number" value="40" oninput="calc()"></div>
+        </div>
+        <div class="row3">
+          <div><label>Допуск (рейтинг)</label><input id="tA" type="number" value="50" oninput="calc()"></div>
+          <div><label>Порог степы</label><input id="tS" type="number" value="70" oninput="calc()"></div>
+          <div><label>Порог летки</label><input id="tL" type="number" value="50" oninput="calc()"></div>
+        </div>
+        <div class="row">
+          <div><label>Мин. балл на сессии</label><input id="minE" type="number" value="50" oninput="calc()"></div>
+        </div>
+        <div class="note">Если у вас другие правила, поменяйте цифры, расчёт обновится сам.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section id="gpa-sec">
+  <div class="wrap">
+    <div class="eyebrow">Шаг 2</div>
+    <h2>Калькулятор GPA</h2>
+    <div class="panel">
+      <div class="subj hd"><div>Предмет</div><div>Кредиты</div><div>Баллы</div><div></div></div>
+      <div id="list"></div>
+      <div class="btns">
+        <button class="pill sm" onclick="addRow()">+ Предмет</button>
+        <button class="pill sm" onclick="resetG()">Очистить</button>
+      </div>
+      <div class="box gpa-box">
+        <h3>Твой GPA</h3>
+        <div class="big" id="gpaVal">—</div>
+        <div class="note" id="gpaNote"></div>
+      </div>
+      <details>
+        <summary>Шкала оценок</summary>
+        <div class="note">95–100 · 4.0 &nbsp; 90–94 · 3.67 &nbsp; 85–89 · 3.33 &nbsp; 80–84 · 3.0 &nbsp; 75–79 · 2.67 &nbsp; 70–74 · 2.33 &nbsp; 65–69 · 2.0 &nbsp; 60–64 · 1.67 &nbsp; 55–59 · 1.33 &nbsp; 50–54 · 1.0 &nbsp; 0–49 · 0</div>
+        <div class="note">В поле «Баллы» вводи итоговый балл за предмет (0–100).</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<div class="banner">
+  <div class="orbit"></div>
+  <h3>Удачной сессии</h3>
+  <a class="pill" href="#top">Наверх</a>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span class="mark">T<i>A</i>U</span>
+    <div class="links"><a href="#permit">Расчёт</a><a href="#gpa-sec">GPA</a></div>
+  </div>
+  <div class="legal">Неофициальный студенческий инструмент · расчёт примерный.<br>Точные правила смотри в положении университета.</div>
+</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+const num=id=>{const v=parseFloat($(id).value);return isNaN(v)?null:v};
+
+/* сколько баллов нужно на сессии, чтобы тотал достиг target */
+function need(target,rk1,rk2,w1,w2,w3){
+  return (target - rk1*w1/100 - rk2*w2/100) / (w3/100);
+}
+
+/* считает вердикт по порогу; на сессии всегда нужно минимум minE */
+function verdict(label,target,rk1,rk2,w1,w2,w3,minE){
+  const raw=need(target,rk1,rk2,w1,w2,w3);
+  const n=Math.max(raw,minE);
+  const val=Math.ceil(n*10)/10;
+  let cls,main,note;
+  if(n>100){cls='bad';main='Недостижимо';note='Нужно '+raw.toFixed(1)+', а это больше 100. Этот порог уже не взять.'}
+  else{
+    main=val+' баллов';
+    cls=n>85?'warn':'ok';
+    note= raw<minE
+      ? 'Тотал '+target+'+ уже почти в кармане, но на сессии всё равно нужно минимум '+minE+'.'
+      : (n>85?'Тяжело, но возможно.':'Реально. Столько минимум нужно набрать на сессии.');
+  }
+  const html=`<div class="box"><h3>${label} · тотал ${target}+</h3><div class="big ${cls}">${main}</div><div class="note">${note}</div><div class="meter"><span style="width:${Math.max(0,Math.min(100,n))}%"></span></div></div>`;
+  return {html, card: n>100?'✕':String(val), bad:n>100};
+}
+
+function calc(){
+  const rk1=num('rk1'),rk2=num('rk2');
+  const w1=num('w1')??30,w2=num('w2')??30,w3=num('w3')??40;
+  const tA=num('tA')??50,tS=num('tS')??70,tL=num('tL')??50,minE=num('minE')??50;
+  const out=$('out');
+  ['cRating','cStepa','cLetka'].forEach(i=>$(i).textContent='—');
+  if(rk1===null||rk2===null){out.innerHTML='<div class="note">Введи оба балла за РК.</div>';return}
+  if(w3<=0){out.innerHTML='<div class="note">Вес сессии должен быть больше 0.</div>';return}
+
+  /* рейтинг = среднее двух РК */
+  const rating=(rk1+rk2)/2;
+  const admitted=rating>=tA;
+  $('cRating').textContent=rating.toFixed(1).replace(/\.0$/,'');
+  const cur=rk1*w1/100+rk2*w2/100;
+
+  let html=`<div class="cur">Набрано до сессии: <b>${cur.toFixed(1)}</b> из ${w1+w2}</div>`;
+  html+=`<div class="box"><h3>Рейтинг · (РК1 + РК2) / 2</h3><div class="big ${admitted?'ok':'bad'}">${rating.toFixed(1)}</div>`+
+        `<div class="note">${admitted?'Допуск к сессии есть (нужно '+tA+'+).':'Допуска нет: нужно минимум '+tA+'.'}</div>`+
+        `<div class="meter"><span style="width:${Math.max(0,Math.min(100,rating))}%"></span></div></div>`;
+
+  if(!admitted){
+    const needRk2=2*tA-rk1;
+    const hint= needRk2<=100
+      ? 'Чтобы получить допуск, на РК2 нужно минимум '+(Math.ceil(needRk2*10)/10)+' (если РК2 ещё не сдан).'
+      : 'С таким РК1 допуск уже не получить.';
+    html+=`<div class="box"><h3>Сессия</h3><div class="big bad">Нет допуска</div><div class="note">${hint}</div></div>`;
+    $('cStepa').textContent='✕';$('cLetka').textContent='✕';
+    out.innerHTML=html;return;
+  }
+
+  const s=verdict('Сохранить степу',tS,rk1,rk2,w1,w2,w3,minE);
+  const l=verdict('Не уйти на летку',tL,rk1,rk2,w1,w2,w3,minE);
+  html+=s.html+l.html;
+  $('cStepa').textContent=s.card;
+  $('cLetka').textContent=l.card;
+  out.innerHTML=html;
+}
+
+/* GPA */
+const scale=[[95,4.0],[90,3.67],[85,3.33],[80,3.0],[75,2.67],[70,2.33],[65,2.0],[60,1.67],[55,1.33],[50,1.0],[0,0]];
+const pts=s=>{for(const [m,p] of scale) if(s>=m) return p; return 0};
+function addRow(name='',cr='',sc=''){
+  const d=document.createElement('div');d.className='subj';
+  const a=document.createElement('input');a.placeholder='Название';a.value=name;a.oninput=save;
+  const b=document.createElement('input');b.type='number';b.inputMode='decimal';b.placeholder='5';b.value=cr;b.oninput=()=>{gpa();save()};
+  const c=document.createElement('input');c.type='number';c.inputMode='decimal';c.placeholder='85';c.value=sc;c.oninput=()=>{gpa();save()};
+  const x=document.createElement('button');x.className='x';x.textContent='✕';x.onclick=()=>{d.remove();gpa();save()};
+  d.append(a,b,c,x);$('list').appendChild(d);
+}
+function gpa(){
+  let tc=0,tp=0;
+  document.querySelectorAll('#list .subj').forEach(r=>{
+    const i=r.querySelectorAll('input');
+    const c=parseFloat(i[1].value),s=parseFloat(i[2].value);
+    if(!isNaN(c)&&!isNaN(s)&&c>0){tc+=c;tp+=c*pts(s)}
+  });
+  if(tc===0){$('gpaVal').textContent='—';$('cGpa').textContent='—';$('gpaNote').textContent='Добавь предметы с кредитами и баллами.';return}
+  const g=(tp/tc).toFixed(2);
+  $('gpaVal').textContent=g;$('cGpa').textContent=g;
+  $('gpaNote').textContent='Всего кредитов: '+tc;
+}
+function save(){
+  try{
+    const data=[...document.querySelectorAll('#list .subj')].map(r=>[...r.querySelectorAll('input')].map(i=>i.value));
+    localStorage.setItem('gpa_rows',JSON.stringify(data));
+  }catch(e){}
+}
+function resetG(){$('list').innerHTML='';addRow();addRow();gpa();save()}
+(function init(){
+  let rows=null;
+  try{rows=JSON.parse(localStorage.getItem('gpa_rows')||'null')}catch(e){}
+  if(rows&&rows.length){rows.forEach(r=>addRow(r[0],r[1],r[2]))}else{addRow();addRow();addRow()}
+  gpa();calc();
+})();
+</script>
+</body>
+</html>
